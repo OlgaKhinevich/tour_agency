@@ -12,8 +12,9 @@ async function init(){
         connection = await mysql.createConnection({
             database: 'travelagency',
             host: "localhost",
+            port: 3306,
             user: "root",
-            password: "xnat2699ol",
+            password: "Kartatoha20",
             insecureAuth: true
         });
     }
@@ -51,7 +52,7 @@ io.on("connection", function(socket){
             const {name, surname, email, password} = user;
             // Запрос к БД
             let sqlQuery = `INSERT INTO users VALUES("${name}", "${surname}", "${email}", "${password}")`;
-            console.log(result);
+            
             // Проверка на наличие такого пользователя в БД
             let isExist= (await getSomeUser(email))[0];
             if(isExist.length) throw new Error("Такой пользователь уже существует!");
@@ -168,7 +169,7 @@ io.on("connection", function(socket){
     }
 });
 
-http.listen(3001, ()=>{
+http.listen(3000, ()=>{
     console.log("Server is working successful!");
 });
 
