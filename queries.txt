@@ -27,7 +27,7 @@ CREATE TABLE tours(
    code INT AUTO_INCREMENT PRIMARY KEY,
    departure DATE,
    arrive DATE,
-   price DECIMAL,
+   price DECIMAL(10,2),
    type VARCHAR(45),
    visa VARCHAR(45),
    description TEXT(500)
