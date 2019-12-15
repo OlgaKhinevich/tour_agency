@@ -1,0 +1,75 @@
+@import '_mixins';
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+   .wrapper {
+        background: url(../../img/Norway.jpg) no-repeat;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        justify-content: center;
+        align-items: center;
+        .loginForm {
+            padding: 20px 10px; 
+            width: 330px;
+            background: rgba(255, 255, 255, 0.2);
+            label.tab {
+                color: #ffffff;
+                font-weight: 600;
+                padding: 15px;
+                display: inline-block;
+                border-radius: 3px 3px 0 0;
+                margin-bottom: -5px;
+                cursor: pointer;
+            }
+            label.tab.active {
+                color: #130042;
+                padding: 10px 20px;
+                display: inline-block;
+                background-color: #ffffff;
+            }
+            .tabForm {
+                display: none;
+                &.active { 
+                    display: block;
+                    padding: 30px 20px;
+                    display: flex;
+                    flex-direction: column;
+                    background-color: #ffffff;
+                    input {
+                        margin-bottom: 20px;
+                        width: 90%;
+                        height: 30px; 
+                        padding-left: 10px;
+                        color:#c4c9c9;
+                       font-family: 'Open Sans', sans-serif;
+                    }
+                    input.checkbox{
+                        margin-top: 14px;
+                        height: 15px;
+                        width: 15px;
+                    }
+                    #button1, #button2 {
+                        transition: 0.5s;
+                        @include button {
+                            background-color: rgba(102, 95, 95, 0);
+                            color: #130042;
+                            border: 2px solid  #130042;
+                            padding-bottom: 28px;
+                            font-weight: 600;
+                        }
+                        &:hover {
+                            color: #002ec7;
+                            border: 2px solid  #002ec7;
+                        }
+                    }  
+                }
+            }
+            
+        }
+   }
+}

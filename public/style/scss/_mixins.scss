@@ -1,0 +1,10 @@
+@mixin button {
+    padding: 10px;
+    color: #fff;
+    background-color: rgba(102, 95, 95, 0.2);
+    border: 2px solid #fff;
+    font-family: 'Open Sans', sans-serif;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    @content;
+}

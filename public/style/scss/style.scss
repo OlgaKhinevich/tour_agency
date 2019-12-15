@@ -1,0 +1,178 @@
+@import '_mixins';
+
+body,
+html {
+  height: 100%;
+  background: #110101;
+  font-family: 'Open Sans', sans-serif;
+  //overflow: hidden;
+}
+
+.split-slideshow {
+  .menu-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    height: 60px;
+    width: 100%;
+    .logo {margin: 0 30px;}
+    .menu-item {
+      font-size: 14px;
+      color: #fff;
+      margin-right: 35px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+  }
+  .slideshow {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    
+    .slider {
+      width: 100vw;
+      height: 100vw;
+      z-index: 2;
+      
+      * {outline: none;}
+      
+      .item {
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        filter: blur(2.5px);
+        
+        .text {
+          display: none;
+        }
+        
+        img {
+          min-width: 101%;
+          min-height: 101%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+    
+    .slick-dots {
+      position: fixed;
+      z-index: 100;
+      width: 40px;
+      height: auto;
+      bottom: auto;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      left: auto;
+      color: #fff;
+      display: block;
+      
+      li {
+        display: block;
+        width: 100%;
+        height: auto;
+        
+        & button {
+          position: relative;
+          width: 20px;
+          height: 15px;
+          text-align: center;
+          
+          &:before {
+            content: '';
+            background: #fff;
+            color: #fff;
+            height: 2px;
+            width: 20px;
+            border-radius: 0;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: auto;
+            transform: translateY(-50%);
+            transition: all .3s ease-in-out;
+            opacity: 0.6;
+          }
+        }
+        
+        &.slick-active {
+          button {
+            &:before {
+              width: 40px;
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+    
+    &.slideshow-right {
+      left: 0;
+      z-index: 1;
+      width: 50vw;
+      pointer-events: none;
+      .slider {
+        left: 0;
+        position: absolute;
+      }
+    }
+  }
+  
+  .slideshow-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    width: 100vw;
+    text-align: center;
+    color: #fff; 
+    pointer-events: none;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    line-height: 1em;
+    h1 {
+      font-weight: 700;
+      font-family: 'Playfair Display SC', serif;
+      font-size: 90px;
+    }
+    p {
+      font-size: 25px;
+      font-weight: 400;
+      letter-spacing: 5px;
+      margin-bottom: 40px;
+    }
+    a {
+      @include button;
+      text-decoration: none;
+      font-size: 20px;
+      letter-spacing: 3px;
+      padding: 10px 20px;
+      font-size: 600;
+      background-color: rgba(102, 95, 95, 0.4);
+      line-height: 50px;
+      z-index: 300;
+    }
+    
+    @media (max-width: 767px) {font-size: 40px;}
+
+  }
+}
+
+
+

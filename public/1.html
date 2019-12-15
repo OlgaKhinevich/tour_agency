@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button  id="tableBtn"></button>
+    <div id="table"></div>
+    <script>
+        document.querySelector('#tableBtn').addEventListener('click', function (event) {
+        let tableAreaSelector = '#table';
+        let headers = ['code', 'name', 'data'];
+        let content = [{code: '123', name: 'тур', data: '12/02/2020'}];
+        drawTable(tableAreaSelector, headers, content);
+        });
+
+        function drawTable(tableAreaSelector, headers = [], content = []){
+        try{
+            //console.log(tableAreaSelector, headers, content);
+            if(!tableAreaSelector || !headers || !headers.length) throw Error ("Неправильные параметры!");
+            let tableArea = document.querySelector(tableAreaSelector);
+            if(!tableArea) throw new Error("Have not table area!");
+            let table = `
+                <thead>
+                    ${drawHeaders(headers)}
+                </thead>
+                <tbody>
+                    ${drawContent(content)}
+                </tbody>
+                `;
+            tableArea.insertAdjacentHTML("beforeEnd", table);
+        }
+        catch(err) {
+            console.log(err);
+        }
+    
+}
+
+
+function drawHeaders(headers = []) {
+    try {
+        if(!headers || !headers.length) throw new Error("Ошибка!");
+        let headersString = "<th>";
+        headers.map((item)=>{
+            headersString += `<td> ${item} </td>`
+        });
+        return headersString;
+    }
+    catch(err) {
+        console.log(err);
+    }  
+}
+
+function drawContent(content = []) {
+   try{
+    console.log(content);
+       let result = "";
+
+       result += `<tr><td> ${content[0].code} </td><td> ${content[0].name} </td><td> ${content[0].data} </td></tr>`; 
+       return result;
+       
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+    </script>
+</body>
+</html>

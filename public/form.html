@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Форма бронирования</title>
+    <link rel="stylesheet" href="./style/scss/form.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Playfair+Display+SC:400,700,900&display=swap&subset=cyrillic" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper">
+        <form name="form">
+            <label>Фамилия</label>
+            <input type="text" placeholder="Введите фамилию" name="surname">
+            <label>Имя</label>
+            <input type="text" placeholder="Введите имя" name="name">
+            <label>Отчество</label>
+            <input type="text" placeholder="Введите отчество" name="patronymic">
+            <label>Электронная почта</label>
+            <input type="email" placeholder="Введите E-mail адрес" name="email"/>
+            <label>Дата рождения</label>
+            <input type="date" id="date" name="birthdate">
+            <label>Загранпаспорт</label>
+            <input type="text" placeholder="Введите серию и номер загранпаспорта" name="passport">
+            <label>Телефон</label>
+            <input type="tel" placeholder="Введите номер телефона" name="telephone">
+            <input type="submit" id="button" value="Забронировать">
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="js/form.js"></script>
+</body>
+</html>

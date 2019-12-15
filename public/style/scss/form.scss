@@ -1,0 +1,57 @@
+@import '_mixins';
+
+body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    background: url(../../img/rome-above.jpg) no-repeat;
+    background-size: cover;
+   .wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 5%;
+        left: 30%;
+        height: 90%;
+        width: 550px;
+        margin: 0;
+        background: rgba(255, 255, 255, 0.2);
+        form {
+            padding: 10px 20px 20px 20px; 
+            width: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-items: center;
+            background: #fff;
+            label {
+                padding: 10px 0 5px 0;
+                font-weight: 600;
+            }
+            input {
+                width: 70%;
+                height: 30px;
+                padding-left: 10px;
+                color:#c4c9c9;
+                font-family: 'Open Sans', sans-serif;
+            }
+            #button {
+                transition: 0.5s;
+                @include button {
+                    margin-top: 20px;
+                    background-color: rgba(102, 95, 95, 0);
+                    color: #130042;
+                    border: 2px solid  #130042;
+                    padding-bottom: 28px;
+                    font-weight: 600;
+                    width: 200px;
+                }
+                &:hover {
+                    color: #002ec7;
+                    border: 2px solid  #002ec7;
+                }
+            }  
+        }
+    }
+}
+

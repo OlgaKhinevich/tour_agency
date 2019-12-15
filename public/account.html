@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Аккаунт пользователя</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Playfair+Display+SC:400,700,900&display=swap&subset=cyrillic" rel="stylesheet">
+    <link rel="stylesheet" href="./style/scss/account.css" type="text/css">      
+</head>
+<body>
+    <nav class="menu-container">
+        <div class="logo">
+            <img src="img/logo.png" height="30px"/>
+        </div>
+        <ul class="menu">
+            <li id="fio"></li>
+            <li><a href="home.html" class="button">выйти</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div class="filter">
+            <p>Выберите тур:</p>
+            <select id="codes">
+                <option value="">Выберите код тура</option>
+            </select>
+            <p>Поиск клиента:</p>
+            <input type="text" id="finding">
+            <input type="submit" id="button" value="Показать">
+        </div>
+        <div id="table"></div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src= "https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src="js/account.js"></script>
+</body>
+</html>

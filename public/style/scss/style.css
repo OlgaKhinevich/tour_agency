@@ -1,0 +1,200 @@
+body,
+html {
+  height: 100%;
+  background: #110101;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.split-slideshow .menu-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  height: 60px;
+  width: 100%;
+}
+
+.split-slideshow .menu-container .logo {
+  margin: 0 30px;
+}
+
+.split-slideshow .menu-container .menu-item {
+  font-size: 14px;
+  color: #fff;
+  margin-right: 35px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.split-slideshow .slideshow {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.split-slideshow .slideshow .slider {
+  width: 100vw;
+  height: 100vw;
+  z-index: 2;
+}
+
+.split-slideshow .slideshow .slider * {
+  outline: none;
+}
+
+.split-slideshow .slideshow .slider .item {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  -webkit-filter: blur(2.5px);
+          filter: blur(2.5px);
+}
+
+.split-slideshow .slideshow .slider .item .text {
+  display: none;
+}
+
+.split-slideshow .slideshow .slider .item img {
+  min-width: 101%;
+  min-height: 101%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+.split-slideshow .slideshow .slick-dots {
+  position: fixed;
+  z-index: 100;
+  width: 40px;
+  height: auto;
+  bottom: auto;
+  top: 50%;
+  right: 0;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  left: auto;
+  color: #fff;
+  display: block;
+}
+
+.split-slideshow .slideshow .slick-dots li {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.split-slideshow .slideshow .slick-dots li button {
+  position: relative;
+  width: 20px;
+  height: 15px;
+  text-align: center;
+}
+
+.split-slideshow .slideshow .slick-dots li button:before {
+  content: '';
+  background: #fff;
+  color: #fff;
+  height: 2px;
+  width: 20px;
+  border-radius: 0;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: auto;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  -webkit-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+  opacity: 0.6;
+}
+
+.split-slideshow .slideshow .slick-dots li.slick-active button:before {
+  width: 40px;
+  opacity: 1;
+}
+
+.split-slideshow .slideshow.slideshow-right {
+  left: 0;
+  z-index: 1;
+  width: 50vw;
+  pointer-events: none;
+}
+
+.split-slideshow .slideshow.slideshow-right .slider {
+  left: 0;
+  position: absolute;
+}
+
+.split-slideshow .slideshow-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 200;
+  width: 100vw;
+  text-align: center;
+  color: #fff;
+  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 10px;
+  line-height: 1em;
+}
+
+.split-slideshow .slideshow-text h1 {
+  font-weight: 700;
+  font-family: 'Playfair Display SC', serif;
+  font-size: 90px;
+}
+
+.split-slideshow .slideshow-text p {
+  font-size: 25px;
+  font-weight: 400;
+  letter-spacing: 5px;
+  margin-bottom: 40px;
+}
+
+.split-slideshow .slideshow-text a {
+  padding: 10px;
+  color: #fff;
+  background-color: rgba(102, 95, 95, 0.2);
+  border: 2px solid #fff;
+  font-family: 'Open Sans', sans-serif;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 20px;
+  letter-spacing: 3px;
+  padding: 10px 20px;
+  font-size: 600;
+  background-color: rgba(102, 95, 95, 0.4);
+  line-height: 50px;
+  z-index: 300;
+}
+
+@media (max-width: 767px) {
+  .split-slideshow .slideshow-text {
+    font-size: 40px;
+  }
+}
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,63 @@
+@import 'mixins';
+
+body {
+  overflow:  hidden;
+  background-color: #faefea;
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  .container {
+    display: flex;
+    flex-direction: row;
+    .info {
+      padding-left: 1%;
+      padding-right: 4%;
+      h1 {
+        font-family: 'Playfair Display SC', serif;
+        font-weight: 900;
+        font-size: 40px;
+        margin: 10px 0 5px 0;
+        color: #8f0a36;
+      }
+      h3 {
+        font-weight: 600;
+        font-size: 19px;
+        color: rgb(59, 59, 59);
+        margin-top: 7px;
+      }
+      p {
+        font-weight: 300;
+        margin-bottom: 30px;
+      }
+      img {
+        height: 380px;
+      }
+      .text-box {     
+        h3, strong {
+          font-weight: 600;
+          font-size: 17px;
+          color: rgb(59, 59, 59);
+        }
+        p {
+          font-weight: 300;
+          margin: 4px 0;
+        }
+      }
+      
+      .button { 
+        margin-top: 40px;
+        text-decoration: none;
+        margin-right: 10px;
+        @include button {
+          background-color: rgba(102, 95, 95, 0);
+          color: #7c084c;
+          border: 2px solid;
+          font-weight: 600;
+        }
+        
+      }
+    }
+  }
+}
+
+

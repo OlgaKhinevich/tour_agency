@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Форма авторизации</title>
+        <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Playfair+Display+SC:400,700,900&display=swap&subset=cyrillic" rel="stylesheet">
+        <link rel="stylesheet" href="./style/scss/login.css" type="text/css">
+    </head>
+    <body>
+        <div class="wrapper">
+
+            <div class="loginForm">
+                <label title="Вкладка 1" class="tab active">Вход</label>
+                <label title="Вкладка 2" class="tab">Регистрация</label>
+
+                <form class="tabForm active" name="signin">
+                    <div class="inputBox">
+                        <input type="email" placeholder="Введите E-mail" name="email">
+                    </div>
+                    <div class="inputBox">
+                        <input type="password" placeholder="Введите пароль" name="password">
+                    </div>
+                    <input type="submit" id="button1" value="Войти">
+                </form>
+
+                <form class="tabForm" name="signup">
+                    <div class="inputBox">
+                        <input type="text" placeholder="Введите имя" name="name">
+                    </div>
+                    <div class="inputBox">
+                            <input type="text" placeholder="Введите фамилию" name="surname">
+                    </div>
+                    <div class="inputBox">
+                        <input type="email" placeholder="Введите E-mail адрес" name="email">
+                    </div>
+                    <div class="inputBox">
+                        <input type="password" placeholder="Введите пароль" name="password">
+                    </div>
+                    <div class="inputBox">
+                        <input type="password" placeholder="Подтверждение пароля" name="confirmPassword">
+                    </div>
+                    <input type="submit" id="button2" value="Регистрация">
+                    <div class="recover">
+                        <input type="checkbox" class="checkbox" name="checkbox">
+                        <label>Принимаю <a  href="#">условия регистрации</a></label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script src= "https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" > </script>
+        <script src="js/login.js"></script>
+    </body>
+</html>

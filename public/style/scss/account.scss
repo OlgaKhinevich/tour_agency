@@ -1,0 +1,84 @@
+@import '_mixins';
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #faefea;
+    font-family: 'Open Sans', sans-serif;
+    nav {
+        height: 60px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-items: flex-end;
+        .logo {margin: 0 30px;}
+        .menu {
+            margin-left: 70%;
+            display: flex;
+            flex-direction: row;
+            list-style-type: none; 
+            li {
+                margin-right: 20px;
+                a {text-decoration: none;}
+            }   
+        }
+    }
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .filter {
+            display: flex;
+            flex-direction: row;
+            margin-top: 2%;
+            width: 60%;
+            border: 2px solid  #7c084c;
+            padding: 10px;
+            align-items: center;
+            justify-content: space-around;
+            #codes {
+                height: 25px;
+            }
+            input[type="text"] {
+                height: 25px;
+            }
+            #button {
+                @include button {
+                    background-color: rgba(102, 95, 95, 0);
+                    color: #7c084c;;
+                    border: 2px solid  #7c084c;
+                    font-weight: 600;
+                    padding: 8px 12px;
+                }
+            }
+        }
+        #table {
+            margin-top: 20px;
+            width: 60%;
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                thead tr {
+                padding-left: 10px;
+                color: #ffffff; 
+                font-weight: bold; 
+                background: #68003d;
+                tr td {border: 1px solid #000000;}
+                }
+                tbody {
+                    tr {
+                        td {border: 1px solid #e8e9eb;}
+                        &:nth-child(2n) {background: #f4f4f4;}
+                        &:hover {background: #ffe8f3;}
+                    }
+                }
+            }
+    
+        }
+    
+    }
+    
+
+}
