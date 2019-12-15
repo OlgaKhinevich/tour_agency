@@ -18,17 +18,16 @@ document.querySelector('#button1').addEventListener('click', function (event) {
         let password = form.password.value;
         if(!email || !password) throw new Error("Пустое поле!");
         socket.once("$login", (status)=>{
-            console.log(status);
             if(status) {        
-                window.location.href = "./account.html";
-                Cookies.set ('email',  status[0].email);        
+                Cookies.set('email', status);
+                window.location.href = "/account";        
                 return;
             } alert("Пользователь не был найден в БД!");
         });
         socket.emit("login", {email: email.trim(), password: password.trim()});
     } catch(err) {
         console.log(err);
-        writeError(err, signin);
+        // writeError(err, signin);
     }
 });
 
@@ -55,25 +54,8 @@ document.querySelector('#button2').addEventListener('click', function (event) {
         socket.emit("addUser", {name: name.trim(), surname: surname.trim(), email: email.trim(), password: password.trim()});
     } catch(err) {
         console.log(err);
-        writeError(err, signup);
+        // writeError(err, signup);
     } 
 });
-
-/*function writeError(error){
-    input.onblur = function() {
-        if (!input.value == '') { 
-         input.classList.add('invalid');
-          innerHTML = error;
-        }
-};
-      
-input.onfocus = function() {
-        if (this.classList.contains('invalid')) {
-          this.classList.remove('invalid');
-          error.innerHTML = "";
-        }
-    };
-}*/
-           
 
 

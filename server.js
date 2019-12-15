@@ -75,7 +75,10 @@ io.on("connection", function(socket){
             // Проверка на наличие пользователя в БД
             let isExist= (await findUser(email))[0];
             if(isExist.length === 0) throw new Error("Такого пользователя нет в БД!");
-            socket.emit("$login", true);      
+             
+            let currentUser = isExist[0];
+            if(currentUser.password !== password) throw new Error("Неправильный пароль!");
+            socket.emit("$login",  currentUser.email);      
         }
         catch(err) {
             console.log(err);
@@ -89,20 +92,22 @@ io.on("connection", function(socket){
             const {surname, name, patronimyc, email, birthdate, passport, telephone} = client;
             // Запрос к БД
             let sqlQuery = `INSERT INTO clients VALUES("${surname}", "${name}", "${patronimyc}", "${email}", "${birthdate}", "${passport}", "${telephone}")`;
-            sqlQuery = `INSERT INTO booking VALUES("${passport}")`;
+          
 
-            // Проверка на наличие такого пользователя в БД
+            // // Проверка на наличие такого пользователя в БД
             let isExist= (await getClient(passport))[0];
             if(isExist.length) throw new Error("Клиент уже существует в БД!");
             let result = await connection.execute(sqlQuery);
-            if (result[0].warningStatus===0) {
-                socket.emit("$addClient", true);
-                return;
-            }
-            socket.emit("$addClient", false);
+      
+            if (result[0].warningStatus!==0) throw new Error("Ошибка во время добавления!"); 
+
+            socket.emit("$addClient", true);
+            //  sqlQuery = `INSERT INTO booking VALUES("${passport}", ${})`;
+           
         }
         catch(err) {
             console.log(err);
+            socket.emit("$addClient", false);
         }
     });
 
@@ -159,7 +164,7 @@ io.on("connection", function(socket){
     }
 
     async function findUser(email) {
-        let sqlQuery = `SELECT email FROM users WHERE email="${email}"`;
+        let sqlQuery = `SELECT * FROM users WHERE email="${email}"`;
         return await connection.execute(sqlQuery);
     }
 
