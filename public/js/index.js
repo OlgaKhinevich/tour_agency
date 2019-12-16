@@ -76,9 +76,3 @@ $('.slideshow-text').slick({
   cssEase: 'cubic-bezier(0.7, 0, 0.3, 1)'
 });
 
-let tourBtn = document.getElementById("tourBtn");
-tourBtn.onclick = function() {
-  window.location.href = "tour.html";
-};
-
-
