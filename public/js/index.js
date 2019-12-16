@@ -77,7 +77,7 @@ $('.slideshow-text').slick({
 });
 
 
-function tourChooseHandler(country){
+function tourChoose(country){
    window.location.href = `/tour?place=${country}`;
 }
 
@@ -85,5 +85,9 @@ function tourChooseHandler(country){
 
 //делегирование на слайдере
 document.querySelector(".slideshow-text").addEventListener("click", (e)=>{
-    console.log(e.target.className);
+    e.preventDefault();
+    if( e.target.className  !== "know_more_btn") return;
+    let item = e.target.closest(".item");
+    let place = item.querySelector("h1").dataset.place;
+    tourChoose(place);
 });

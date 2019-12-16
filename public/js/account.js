@@ -2,30 +2,6 @@ const socket = io();
 
 
 
-
-
-// // событие клика на кнопку для отображения таблицы
-// document.querySelector('#button').addEventListener('click', function (event) {
-//     event.preventDefault();
-//     try {
-//         socket.once("$getBooking", (status)=>{
-//             console.log(status);  
-//             if(status) {
-//                 let tableAreaSelector = document.getElementById('table');
-//                 let headers = ['паспорт', 'код тура', 'дата отправления'];
-//                 drawTable(tableAreaSelector, headers, status);
-//                 return;
-//             } else { 
-//                 alert("Ошибка в отображении!");
-//             }
-//         });
-//         socket.emit("getBooking");
-       
-//     } catch(err) {
-//         console.log(err);
-//     }
-// });
-
 //начальные действия при загрузке страницы
 function init(){
 
@@ -46,6 +22,7 @@ function init(){
     let codesChoose = document.querySelector("#codes");
      codesChoose.innerHTML = `
      <option selected disabled> Выберите код тура </option>
+     <option value="all"> Все туры </option>
      `;
 
      tourCodes.map((item)=>{
@@ -154,6 +131,20 @@ function addZeros(number) {
     else {return number;}
 }
 
+function showAllRows(){
+    let rows = document.querySelectorAll("tbody tr");
+    for(let i=0; i<rows.length; i++){
+       if(rows[i].classList.contains("hide"))
+       rows[i].classList.remove("hide");
+    }
+}
+
+function isUserEqual(surname, name, farthername,equalString){
+  let fio = `${surname.trim()} ${name.trim()} ${farthername.trim()}`;
+
+  return fio.startsWith(equalString);
+}
+
 
 //HANDLERS =====================================================================================================
 
@@ -171,26 +162,34 @@ socket.on("$getBookingInfo", (info)=>{
 
 //туры
 document.querySelector("#codes").addEventListener("change", (e)=>{
- 
+   let table = document.querySelector("#tableArea");
+   let rows = table.querySelectorAll("tbody tr");
+   let selectValue = e.target.value;
+   
+   showAllRows();
+   if(selectValue === "all") return;
+   for(let i=0; i<rows.length; i++){
+       if(rows[i].children[5].innerText !== selectValue){
+             rows[i].classList.add("hide");
+       }
+   }
+
 });
 
-// //поиск клиента по фамилии
-// document.querySelector("#button").addEventListener("click", ()=>{
-//     socket.once("$findClients", (clientList)=>{
-//         let headers = ["Фамилия","Имя","Отчество", "Дата рождения","Паспорт","Email","Телефон"];
-//         const tableArea = document.querySelector("#tableArea");
-//         drawTable(tableArea, headers, clientList, drawClients);
-//     });
-//  try{
-//     let surname = document.querySelector("#finding").value;
-//     if(!surname) throw new Error("Заполните поле поиска!");
-//     socket.emit("findClients", surname);
-//  }
-//  catch(err){
-//     console.log(err);
-//     alert(err);
-//  }
-// });
+
+document.querySelector("#button").addEventListener("click", ()=>{
+   let searchRowValue = document.querySelector("#finding").value;
+   let table = document.querySelector("#tableArea");
+   let rows = table.querySelectorAll("tbody tr");
+
+   showAllRows();
+   if(searchRowValue === "") return;
+   for(let i=0; i<rows.length; i++){
+       if(!isUserEqual(rows[i].children[0].innerText, rows[i].children[1].innerText,rows[i].children[2].innerText, searchRowValue )){
+             rows[i].classList.add("hide");
+       }
+   }
+});
 
 
 init();

@@ -170,56 +170,6 @@ io.on("connection", function(socket){
     });
 
 
-
-    // //поиск клиентов
-    // socket.on("findClients", async(clientSurname)=>{
-    //     try{
-    //       if(!clientSurname) throw new Error("Wrong params!");
-    //       let sqlQuery = `SELECT * FROM clients WHERE surname LIKE "${clientSurname}%"`;
-    //       let [clients] = await connection.execute(sqlQuery);
- 
-
-    //       socket.emit("$findClients", clients);
-    //     }
-    //     catch(err){
-    //       console.log(err);
-    //       socket.emit("$findClients", false);
-    //     }
-    // });
-
-    // socket.on("getBooking", async()=>{
-    //     try {
-    //         let sqlQuery = `SELECT * FROM booking`;
-    //         let result = await connection.execute(sqlQuery);
-    //         console.log(result[0]);
-    //         if (result[0]) {
-    //             socket.emit("$getBooking", result[0]);
-    //             return;
-    //         }
-    //         socket.emit("$getBooking", false);
-    //     }
-    //     catch(err) {
-    //         console.log(err);
-    //     }
-    // });
-
-
-    // socket.on("getTourInfo", async()=>{
-    //     try {
-    //         let sqlQuery1 = `SELECT * FROM tours`;
-    //         let result1 = await connection.execute(sqlQuery1);
-    //         console.log(result1);
-    //         if (result1[0]) {
-    //             socket.emit("$getTourInfo", result1[0]);
-    //             return;
-    //         }
-    //         socket.emit("$getTourInfo", false);
-    //     }
-    //     catch(err) {
-    //         console.log(err);
-    //     }
-    // });
-
     async function getSomeUser(email) {
         let sqlQuery = `SELECT * FROM users WHERE email="${email}"`;
         return await connection.execute(sqlQuery);
@@ -247,6 +197,36 @@ init();
 
 //generate tour page
 function genTourPage(place){
+
+    let description = "";
+    let route = "";
+    let price = "";
+
+    switch(place){
+      case "brazil":
+          route = "Рио-де-Жанейро – Ангра-дус-Рейс";
+          price = "75897 руб/чел. + перелет";
+        break;
+      
+      case "london":
+        route = "Лондон";
+        price = "40000 руб/чел.";
+      break;
+
+      case "newyork" :
+        route = "Нью-Йорк";
+        price = "60000 руб/чел.";
+        description = "Сегодняшний Нью-Йорк или Big Apple — это город-мегаполис, жизнь которого пульсирует в любое время суток. Cвоей особенной притягательностью «Большое яблоко» обязано не столько богатству финансовых воротил, роскошному многообразию культурно-развлекательной программы, которая одарила его прозванием «города, который никогда не спит», и даже не своей футуристической архитектуре, а скорее благодаря тому, что Нью-Йорк это органичное воплощение всей нашей планеты в миниатюре. Город контрастов кружит голову своим гостям, проносясь калейдоскопом роскошных особняков Гринвич Виллидж, пестрыми вывесками Чайнатауна, возносящимися к небу небоскребами Манхэттена, готическими соборами и шикарными магазинами 5-й авеню. ";
+
+        break;
+
+       case "italy":
+        route = "Рим";
+        price = "30000 руб/чел.";
+        description = "Лондон - наиболее интересный город в Англии, к тому же, наиболее аутентичный. Тысячи туристов выбирают поездки в Лондон, чтобы увидеть одновременно и историческое прошлое великой империи, и один из центров современной цивилизации. Интереснейшее сочетание старинных готических зданий, олицетворяющих незыблемость английских традиций с современными устремлёнными в будущее высотными знаниями, оставляя яркое и ни с чем несравнимое впечатление.";
+       break;
+    }
+
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -266,9 +246,9 @@ function genTourPage(place){
             <div class="info">
                 <img src="img/${place}1.jpg">
                 <img src="img/${place}2.jpg">
-                <img src="img/${place}3.jpeg">
+                <img src="img/${place==="brazil" ? "brazil3.jpeg": place+"3.jpg"}">
                 <h1 class="name"></h1>
-                <h3 class="route">Рио-де-Жанейро – Ангра-дус-Рейс</h3>
+                <h3 class="route">${route}</h3>
                 <div class="text-box">
                     <p class="dates"><strong>Даты:</strong> 05.01.2020-16.01.2020</p>
                     <p class="hotels"><strong>Отели:</strong> 
@@ -276,9 +256,9 @@ function genTourPage(place){
                         BAHIA OTHON PALACE 3* <br>
                     </p>
                     <p class="visa"><strong>Виза:</strong></p>
-                    <p class="price"><strong>Цена:</strong> 75897 руб/чел. + перелет</p>    
+                    <p class="price"><strong>Цена:</strong> ${price}</p>    
             </div>
-            <p class="description"></p>
+            <p class="description">${description}</p>
             <a href="/home" class="button">назад</a>
             <a href="/form" class="button">забронировать</a>
             </div>      
