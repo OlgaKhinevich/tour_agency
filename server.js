@@ -14,7 +14,7 @@ async function init(){
             host: "localhost",
             port: 3306,
             user: "root",
-            password: "pass",
+            password: "Kartatoha20",
             insecureAuth: true
         });
     }

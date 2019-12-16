@@ -77,6 +77,9 @@ $('.slideshow-text').slick({
 });
 
 
+function tourChooseHandler(country){
+   window.location.href = `/tour?place=${country}`;
+}
 
 //HANDLERS =============================================================================================================
 
