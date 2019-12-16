@@ -135,57 +135,57 @@ io.on("connection", function(socket){
         }
     });
 
-    //подробная информация о туре
-    socket.on("getTourInfo", async(data)=>{
+
+
+    //Получить информацию о бронировании
+    socket.on("getBookingInfo", async ()=>{
         try{
-           const {tourCode} = data;
-           if(!tourCode) throw new Error("Wrong params!");
-           //получим информацию о туре
-           let sqlQuery = `SELECT route_id FROM tours_routes  WHERE tour_code = "${tourCode}"`;
-           let routeCodes = (await connection.execute(sqlQuery))[0];
+        let sqlQuery = `SELECT c.surname, c.name,c.patronymic,c.passport,c.email, t.code, t.departure,t.arrive, t.type, t.visa 
+        FROM booking AS b INNER JOIN clients AS c ON c.passport = b.passport INNER JOIN  tours AS t ON t.code = b.tour_code;`;
+
+        let [bookingInfo] = await connection.execute(sqlQuery);
            
-           sqlQuery = `SELECT hotel, city FROM route WHERE id IN(`;
+        socket.emit("$getBookingInfo", bookingInfo);
 
-           for(let i=0; i<routeCodes.length; i++){
-               //if last
-               if(i === routeCodes.length -1){
-                sqlQuery+= `${routeCodes[i].route_id})`;
-                continue;
-               }
-
-              sqlQuery+= `${routeCodes[i].route_id},`
-           }
-           //получим информацию о пунктах остановки
-           let [routes] = await connection.execute(sqlQuery);
-            
-           //получим общую информацию о туре
-           sqlQuery = `SELECT * FROM tours WHERE code = "${tourCode}"`;
-           let [detailTourInfo] = await connection.execute(sqlQuery);
-
-           socket.emit("$getTourInfo", {detailTourInfo, routes});
         }
         catch(err){
           console.log(err);
-          socket.emit("$getTourInfo", false);
+          socket.emit("$getBookingInfo", false);
+        }
+    });
+
+    socket.on("getFIO", async()=>{
+        try {
+            let sqlQuery = `SELECT name, surname FROM users`;
+            let result = await connection.execute(sqlQuery);
+            if (result[0]) {
+                socket.emit("$getFIO", result[0]);
+                return;
+            }
+            socket.emit("$getFIO", false);
+        }
+        catch(err) {
+            console.log(err);
         }
     });
 
 
-    //поиск клиентов
-    socket.on("findClients", async(clientSurname)=>{
-        try{
-          if(!clientSurname) throw new Error("Wrong params!");
-          let sqlQuery = `SELECT * FROM clients WHERE surname LIKE "${clientSurname}%"`;
-          let [clients] = await connection.execute(sqlQuery);
+
+    // //поиск клиентов
+    // socket.on("findClients", async(clientSurname)=>{
+    //     try{
+    //       if(!clientSurname) throw new Error("Wrong params!");
+    //       let sqlQuery = `SELECT * FROM clients WHERE surname LIKE "${clientSurname}%"`;
+    //       let [clients] = await connection.execute(sqlQuery);
  
 
-          socket.emit("$findClients", clients);
-        }
-        catch(err){
-          console.log(err);
-          socket.emit("$findClients", false);
-        }
-    });
+    //       socket.emit("$findClients", clients);
+    //     }
+    //     catch(err){
+    //       console.log(err);
+    //       socket.emit("$findClients", false);
+    //     }
+    // });
 
     // socket.on("getBooking", async()=>{
     //     try {
@@ -203,20 +203,6 @@ io.on("connection", function(socket){
     //     }
     // });
 
-    // socket.on("getFIO", async()=>{
-    //     try {
-    //         let sqlQuery = `SELECT name, surname FROM users`;
-    //         let result = await connection.execute(sqlQuery);
-    //         if (result[0]) {
-    //             socket.emit("$getFIO", result[0]);
-    //             return;
-    //         }
-    //         socket.emit("$getFIO", false);
-    //     }
-    //     catch(err) {
-    //         console.log(err);
-    //     }
-    // });
 
     // socket.on("getTourInfo", async()=>{
     //     try {

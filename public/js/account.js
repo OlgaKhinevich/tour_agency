@@ -55,13 +55,13 @@ function init(){
     }
     catch(err){
         console.log(err);
-    }
+    }    
 
   });
 
   socket.emit("getTourCodes");
   socket.emit("getFIO");
-
+  socket.emit("getBookingInfo");
 
 }
 
@@ -102,40 +102,9 @@ function drawHeaders(headers = []) {
     }  
 }
 
-//Отрисуем данные с сервера для тура
-function drawTourContent(content) {
-   try {
-     let {detailTourInfo, routes} = content;
- 
-     let [{code, arrive, visa, type, description,departure, price}] = detailTourInfo;
-     let result = 
-     `<tr>
-        <td> ${code} </td>
-        <td> ${presentDate( departure)}</td>
-        <td> ${presentDate( arrive )}</td>
-        <td> ${type}</td>
-        <td> ${visa} </td>
-        <td> ${price}</td>
-
-     `;
-
-     let routesString = "<td><select>"
-     for(let i=0; i<routes.length; i++){
-         routesString += `<option> ${routes[i].city} - Отель ${routes[i].hotel} </option>`;
-     }
-     routesString += "</select></td>";
-       
-     result+= `${routesString}  <td>${description}</td></tr>`;
-
-     return result;
-    }
-    catch(err){
-        console.log(err);
-    }
-}
 
 //отрисовать таблицу с клиентами
-function drawClients(content){
+function drawBookingContent(content){
     try{
      if(!content) throw new Error("Wrong params!");
      let result = "";
@@ -146,10 +115,15 @@ function drawClients(content){
             <td> ${content[i].surname}</td>
             <td> ${content[i].name} </td>
             <td> ${content[i].patronymic}</td>
-            <td> ${presentDate( content[i].birthdate )}</td>
-            <td> ${content[i].passport}</td>
+            <td> ${content[i].passport} </td>
             <td> ${content[i].email}</td>
-            <td> ${content[i].telephone}</td>
+            <td> ${content[i].code} </td>
+            <td> ${presentDate( content[i].departure )}</td>
+            <td> ${presentDate( content[i].arrive )}</td>
+            <td> ${content[i].type}</td>
+            <td> ${content[i].visa} </td>
+
+        
          </tr>
          `;
      }
@@ -183,41 +157,40 @@ function addZeros(number) {
 
 //HANDLERS =====================================================================================================
 
+socket.on("$getBookingInfo", (info)=>{
+    try{
+       if(!info) throw new Error("Ошибка во время получения информации о туре!");
+       const tableArea = document.querySelector("#tableArea");
+       const headers = ["Фамилия","Имя","Отчество","Паспорт","Email","Код","Дата отъезда", "Дата приезда","Тип", "Виза"];
+       drawTable(tableArea, headers, info, drawBookingContent );
+    }
+    catch(err){
+      console.log(err);
+    }
+ });
+
 //туры
 document.querySelector("#codes").addEventListener("change", (e)=>{
-    socket.once("$getTourInfo", (info)=>{
-       try{
-          if(!info) throw new Error("Ошибка во время получения информации о туре!");
-          const tableArea = document.querySelector("#tableArea");
-          const headers = ["Код","Дата отъезда", "Дата приезда",  "Тип", "Виза","Стоимость", "Пункты", "Описание"];
-          drawTable(tableArea, headers, info, drawTourContent );
-       }
-       catch(err){
-         console.log(err);
-       }
-    });
-
-
-    socket.emit("getTourInfo", {tourCode: e.target.value});
+ 
 });
 
-//поиск клиента по фамилии
-document.querySelector("#button").addEventListener("click", ()=>{
-    socket.once("$findClients", (clientList)=>{
-        let headers = ["Фамилия","Имя","Отчество", "Дата рождения","Паспорт","Email","Телефон"];
-        const tableArea = document.querySelector("#tableArea");
-        drawTable(tableArea, headers, clientList, drawClients);
-    });
- try{
-    let surname = document.querySelector("#finding").value;
-    if(!surname) throw new Error("Заполните поле поиска!");
-    socket.emit("findClients", surname);
- }
- catch(err){
-    console.log(err);
-    alert(err);
- }
-});
+// //поиск клиента по фамилии
+// document.querySelector("#button").addEventListener("click", ()=>{
+//     socket.once("$findClients", (clientList)=>{
+//         let headers = ["Фамилия","Имя","Отчество", "Дата рождения","Паспорт","Email","Телефон"];
+//         const tableArea = document.querySelector("#tableArea");
+//         drawTable(tableArea, headers, clientList, drawClients);
+//     });
+//  try{
+//     let surname = document.querySelector("#finding").value;
+//     if(!surname) throw new Error("Заполните поле поиска!");
+//     socket.emit("findClients", surname);
+//  }
+//  catch(err){
+//     console.log(err);
+//     alert(err);
+//  }
+// });
 
 
 init();
