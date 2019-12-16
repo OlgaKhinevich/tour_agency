@@ -5,10 +5,7 @@ html {
   height: 100%;
   background: #110101;
   font-family: 'Open Sans', sans-serif;
-  //overflow: hidden;
-}
-
-.split-slideshow {
+  overflow: hidden;
   .menu-container {
     display: flex;
     flex-direction: row;
@@ -30,6 +27,7 @@ html {
       text-decoration: none;
     }
   }
+
   .slideshow {
     position: absolute;
     z-index: 1;
@@ -166,13 +164,9 @@ html {
       font-size: 600;
       background-color: rgba(102, 95, 95, 0.4);
       line-height: 50px;
-      z-index: 300;
+      pointer-events: auto;
     }
-    
-    @media (max-width: 767px) {font-size: 40px;}
-
   }
+
+
 }
-
-
-
