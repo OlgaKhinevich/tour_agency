@@ -12,8 +12,9 @@ async function init(){
         connection = await mysql.createConnection({
             database: 'travelagency',
             host: "localhost",
+            port: 3306,
             user: "root",
-            password: "xnat2699ol",
+            password: "pass",
             insecureAuth: true
         });
     }
@@ -29,7 +30,17 @@ app.get("/", (req, res)=>{
 });
 
 app.get("/tour", (req, res)=>{
-    res.sendFile(__dirname + "/public/tour.html");
+    try{
+         const {place} = req.query;
+         if(!place) throw new Error("Wrong tour place!");
+          res.send(genTourPage(place));
+    }
+    catch(err){
+      console.log(err);
+      res.statusCode = 404;
+      res.end();
+    }
+
 });
 
 app.get("/login", (req, res)=>{
@@ -51,7 +62,7 @@ io.on("connection", function(socket){
             const {name, surname, email, password} = user;
             // Запрос к БД
             let sqlQuery = `INSERT INTO users VALUES("${name}", "${surname}", "${email}", "${password}")`;
-            console.log(result);
+            
             // Проверка на наличие такого пользователя в БД
             let isExist= (await getSomeUser(email))[0];
             if(isExist.length) throw new Error("Такой пользователь уже существует!");
@@ -74,7 +85,10 @@ io.on("connection", function(socket){
             // Проверка на наличие пользователя в БД
             let isExist= (await findUser(email))[0];
             if(isExist.length === 0) throw new Error("Такого пользователя нет в БД!");
-            socket.emit("$login", true);      
+             
+            let currentUser = isExist[0];
+            if(currentUser.password !== password) throw new Error("Неправильный пароль!");
+            socket.emit("$login",  currentUser.email);      
         }
         catch(err) {
             console.log(err);
@@ -88,69 +102,137 @@ io.on("connection", function(socket){
             const {surname, name, patronimyc, email, birthdate, passport, telephone} = client;
             // Запрос к БД
             let sqlQuery = `INSERT INTO clients VALUES("${surname}", "${name}", "${patronimyc}", "${email}", "${birthdate}", "${passport}", "${telephone}")`;
-            sqlQuery = `INSERT INTO booking VALUES("${passport}")`;
+          
 
-            // Проверка на наличие такого пользователя в БД
+            // // Проверка на наличие такого пользователя в БД
             let isExist= (await getClient(passport))[0];
             if(isExist.length) throw new Error("Клиент уже существует в БД!");
             let result = await connection.execute(sqlQuery);
-            if (result[0].warningStatus===0) {
-                socket.emit("$addClient", true);
-                return;
-            }
+      
+            if (result[0].warningStatus!==0) throw new Error("Ошибка во время добавления!"); 
+
+            socket.emit("$addClient", true);
+            //  sqlQuery = `INSERT INTO booking VALUES("${passport}", ${})`;
+           
+        }
+        catch(err) {
+            console.log(err);
             socket.emit("$addClient", false);
         }
-        catch(err) {
-            console.log(err);
+    });
+
+
+    //получить коды всех существующих туров
+    socket.on("getTourCodes", async()=>{
+        try{
+           let sqlQuery = `SELECT code FROM tours`;
+           let [codes] = await connection.execute(sqlQuery);
+           socket.emit("$getTourCodes", codes);
+        }
+        catch(err){
+          console.log(err);
+          socket.emit("$getTourCodes", false);
         }
     });
 
-    socket.on("getBooking", async()=>{
-        try {
-            let sqlQuery = `SELECT * FROM booking`;
-            let result = await connection.execute(sqlQuery);
-            console.log(result[0]);
-            if (result[0]) {
-                socket.emit("$getBooking", result[0]);
-                return;
-            }
-            socket.emit("$getBooking", false);
+    //подробная информация о туре
+    socket.on("getTourInfo", async(data)=>{
+        try{
+           const {tourCode} = data;
+           if(!tourCode) throw new Error("Wrong params!");
+           //получим информацию о туре
+           let sqlQuery = `SELECT route_id FROM tours_routes  WHERE tour_code = "${tourCode}"`;
+           let routeCodes = (await connection.execute(sqlQuery))[0];
+           
+           sqlQuery = `SELECT hotel, city FROM route WHERE id IN(`;
+
+           for(let i=0; i<routeCodes.length; i++){
+               //if last
+               if(i === routeCodes.length -1){
+                sqlQuery+= `${routeCodes[i].route_id})`;
+                continue;
+               }
+
+              sqlQuery+= `${routeCodes[i].route_id},`
+           }
+           //получим информацию о пунктах остановки
+           let [routes] = await connection.execute(sqlQuery);
+            
+           //получим общую информацию о туре
+           sqlQuery = `SELECT * FROM tours WHERE code = "${tourCode}"`;
+           let [detailTourInfo] = await connection.execute(sqlQuery);
+
+           socket.emit("$getTourInfo", {detailTourInfo, routes});
         }
-        catch(err) {
-            console.log(err);
+        catch(err){
+          console.log(err);
+          socket.emit("$getTourInfo", false);
         }
     });
 
-    socket.on("getFIO", async()=>{
-        try {
-            let sqlQuery = `SELECT name, surname FROM users`;
-            let result = await connection.execute(sqlQuery);
-            if (result[0]) {
-                socket.emit("$getFIO", result[0]);
-                return;
-            }
-            socket.emit("$getFIO", false);
+
+    //поиск клиентов
+    socket.on("findClients", async(clientSurname)=>{
+        try{
+          if(!clientSurname) throw new Error("Wrong params!");
+          let sqlQuery = `SELECT * FROM clients WHERE surname LIKE "${clientSurname}%"`;
+          let [clients] = await connection.execute(sqlQuery);
+ 
+
+          socket.emit("$findClients", clients);
         }
-        catch(err) {
-            console.log(err);
+        catch(err){
+          console.log(err);
+          socket.emit("$findClients", false);
         }
     });
 
-    socket.on("getTourInfo", async()=>{
-        try {
-            let sqlQuery1 = `SELECT * FROM tours`;
-            let result1 = await connection.execute(sqlQuery1);
-            console.log(result1);
-            if (result1[0]) {
-                socket.emit("$getTourInfo", result1[0]);
-                return;
-            }
-            socket.emit("$getTourInfo", false);
-        }
-        catch(err) {
-            console.log(err);
-        }
-    });
+    // socket.on("getBooking", async()=>{
+    //     try {
+    //         let sqlQuery = `SELECT * FROM booking`;
+    //         let result = await connection.execute(sqlQuery);
+    //         console.log(result[0]);
+    //         if (result[0]) {
+    //             socket.emit("$getBooking", result[0]);
+    //             return;
+    //         }
+    //         socket.emit("$getBooking", false);
+    //     }
+    //     catch(err) {
+    //         console.log(err);
+    //     }
+    // });
+
+    // socket.on("getFIO", async()=>{
+    //     try {
+    //         let sqlQuery = `SELECT name, surname FROM users`;
+    //         let result = await connection.execute(sqlQuery);
+    //         if (result[0]) {
+    //             socket.emit("$getFIO", result[0]);
+    //             return;
+    //         }
+    //         socket.emit("$getFIO", false);
+    //     }
+    //     catch(err) {
+    //         console.log(err);
+    //     }
+    // });
+
+    // socket.on("getTourInfo", async()=>{
+    //     try {
+    //         let sqlQuery1 = `SELECT * FROM tours`;
+    //         let result1 = await connection.execute(sqlQuery1);
+    //         console.log(result1);
+    //         if (result1[0]) {
+    //             socket.emit("$getTourInfo", result1[0]);
+    //             return;
+    //         }
+    //         socket.emit("$getTourInfo", false);
+    //     }
+    //     catch(err) {
+    //         console.log(err);
+    //     }
+    // });
 
     async function getSomeUser(email) {
         let sqlQuery = `SELECT * FROM users WHERE email="${email}"`;
@@ -158,7 +240,7 @@ io.on("connection", function(socket){
     }
 
     async function findUser(email) {
-        let sqlQuery = `SELECT email FROM users WHERE email="${email}"`;
+        let sqlQuery = `SELECT * FROM users WHERE email="${email}"`;
         return await connection.execute(sqlQuery);
     }
 
@@ -168,7 +250,7 @@ io.on("connection", function(socket){
     }
 });
 
-http.listen(3001, ()=>{
+http.listen(3000, ()=>{
     console.log("Server is working successful!");
 });
 
@@ -177,3 +259,46 @@ init();
 
 
 
+//generate tour page
+function genTourPage(place){
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Путешествие в Бразилию</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Playfair+Display+SC:400,700,900&display=swap&subset=cyrillic" rel="stylesheet">
+        <link rel="stylesheet" href="./style/scss/tour.css" type="text/css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="img"> 
+                <img src="img/${place}0.jpg" height="864px">
+            </div>
+            <div class="info">
+                <img src="img/${place}1.jpg">
+                <img src="img/${place}2.jpg">
+                <img src="img/${place}3.jpeg">
+                <h1 class="name"></h1>
+                <h3 class="route">Рио-де-Жанейро – Ангра-дус-Рейс</h3>
+                <div class="text-box">
+                    <p class="dates"><strong>Даты:</strong> 05.01.2020-16.01.2020</p>
+                    <p class="hotels"><strong>Отели:</strong> 
+                        ATLANTIS COPACABANA 3* <br>
+                        BAHIA OTHON PALACE 3* <br>
+                    </p>
+                    <p class="visa"><strong>Виза:</strong></p>
+                    <p class="price"><strong>Цена:</strong> 75897 руб/чел. + перелет</p>    
+            </div>
+            <p class="description"></p>
+            <a href="/home" class="button">назад</a>
+            <a href="/form" class="button">забронировать</a>
+            </div>      
+        </div>
+        <script src="js/tour.js"></script>
+    </body>
+    </html>
+    `;
+}

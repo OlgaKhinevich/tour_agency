@@ -76,3 +76,11 @@ $('.slideshow-text').slick({
   cssEase: 'cubic-bezier(0.7, 0, 0.3, 1)'
 });
 
+
+
+//HANDLERS =============================================================================================================
+
+//делегирование на слайдере
+document.querySelector(".slideshow-text").addEventListener("click", (e)=>{
+    console.log(e.target.className);
+});
