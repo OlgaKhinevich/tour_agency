@@ -80,3 +80,7 @@ $('.slideshow-text').slick({
 
 //HANDLERS =============================================================================================================
 
+//делегирование на слайдере
+document.querySelector(".slideshow-text").addEventListener("click", (e)=>{
+    console.log(e.target.className);
+});
