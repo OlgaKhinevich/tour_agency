@@ -14,7 +14,7 @@ async function init(){
             host: "localhost",
             port: 3306,
             user: "root",
-            password: "xnat2699ol",
+            password: "Kartatoha20",
             insecureAuth: true
         });
     }
@@ -100,18 +100,26 @@ io.on("connection", function(socket){
     // добавление клиента при регистрации
     socket.on("addClient", async(client)=>{
         try {
-            const {surname, name, patronimyc, email, birthdate, passport, telephone} = client;
+            const {surname, name, patronimyc, email, birthdate, passport, telephone, tourCode} = client;
             let sqlQuery = `INSERT INTO clients VALUES("${surname}", "${name}", "${patronimyc}", "${email}", "${birthdate}", "${passport}", "${telephone}")`;
           
+
             // Проверка на наличие такого пользователя в БД
             let isExist= (await getClient(passport))[0];
             if(isExist.length) throw new Error("Клиент уже существует в БД!");
-            let result = await connection.execute(sqlQuery);
+            let clientAddStatus = await connection.execute(sqlQuery);
       
-            if (result[0].warningStatus!==0) throw new Error("Ошибка во время добавления!"); 
+            if (clientAddStatus[0].warningStatus!==0) throw new Error("Ошибка во время добавления!"); 
+            
+
+            sqlQuery = `INSERT INTO booking VALUES("${passport}", ${tourCode})`;
+            let bookingAddStatus = await connection.execute(sqlQuery);
+
+            if (bookingAddStatus[0].warningStatus!==0) throw new Error("Ошибка во время добавления!"); 
+
 
             socket.emit("$addClient", true);
-            //  sqlQuery = `INSERT INTO booking VALUES("${passport}", ${})`;
+      
            
         }
         catch(err) {

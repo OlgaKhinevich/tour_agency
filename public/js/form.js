@@ -11,7 +11,8 @@ document.querySelector('#button').addEventListener('click', function (event) {
         let birthdate = form.birthdate.value;
         let passport = form.passport.value;
         let telephone = form.telephone.value;
-        if(!surname || !name || !patronimyc || !birthdate || !passport || !telephone) throw new Error("Пустое поле");
+        let tourCode = document.querySelector("#tour_code_select").value;
+        if(!surname || !name || !patronimyc || !birthdate || !passport || !telephone || !tourCode) throw new Error("Пустое поле");
         if(passport.length !== 9) throw new Error("Неверные серия и номер паспорта!");
         socket.once("$addClient", (status)=>{
             if(status) {
@@ -19,7 +20,8 @@ document.querySelector('#button').addEventListener('click', function (event) {
                 return;
             } alert("Ошибка при добавлении клиента!");
         });
-        socket.emit("addClient", {surname: surname.trim(), name: name.trim(), patronimyc: patronimyc.trim(), email: email.trim(), birthdate: birthdate, 
+        console.log("Отправилось");
+        socket.emit("addClient", {tourCode,surname: surname.trim(), name: name.trim(), patronimyc: patronimyc.trim(), email: email.trim(), birthdate: birthdate, 
         passport: passport, telephone: telephone});
     } catch(err) {
         console.log(err);
@@ -27,6 +29,25 @@ document.querySelector('#button').addEventListener('click', function (event) {
 });
 
 
-           
+socket.once("$getTourCodes", (tourCodes)=>{
+    try{  
+    if(!tourCodes) throw new Error("Ошибка при получении данных!");
+    let codesChoose = document.querySelector("#tour_code_select");
+     codesChoose.innerHTML = `
+     <option selected disabled> Выберите код тура </option>
+     `;
+
+     tourCodes.map((item)=>{
+         codesChoose.innerHTML += `<option> ${item.code} </option>`;
+     });
+
+    }
+    catch(err){
+        console.log(err);
+    }    
+
+  });  
+
+socket.emit("getTourCodes");
 
 
