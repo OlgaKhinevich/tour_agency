@@ -16,7 +16,7 @@ document.querySelector('#button1').addEventListener('click', function (event) {
         let form = document.forms.signin;
         let email = form.email.value;
         let password = form.password.value;
-        if(!email || !password) throw new Error("Пустое поле!");
+        if(!email || !password) throw new Error("Поля не заполнены!");
         socket.once("$login", (status)=>{
             if(status) {        
                 Cookies.set('email', status);
@@ -26,8 +26,7 @@ document.querySelector('#button1').addEventListener('click', function (event) {
         });
         socket.emit("login", {email: email.trim(), password: password.trim()});
     } catch(err) {
-        console.log(err);
-        // writeError(err, signin);
+        alert(err);
     }
 });
 
@@ -53,8 +52,7 @@ document.querySelector('#button2').addEventListener('click', function (event) {
         });
         socket.emit("addUser", {name: name.trim(), surname: surname.trim(), email: email.trim(), password: password.trim()});
     } catch(err) {
-        console.log(err);
-        // writeError(err, signup);
+        alert(err);
     } 
 });
 

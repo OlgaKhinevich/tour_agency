@@ -103,36 +103,37 @@ body .container .filter #button {
   padding: 8px 12px;
 }
 
-body .container #table {
+body .container #tableArea {
   margin-top: 20px;
   width: 60%;
 }
 
-body .container #table table {
+body .container #tableArea table {
   width: 100%;
   border-collapse: collapse;
 }
 
-body .container #table table thead tr {
-  padding-left: 10px;
+body .container #tableArea table thead tr {
   color: #ffffff;
   font-weight: bold;
+  text-align: center;
   background: #68003d;
+  height: 40px;
 }
 
-body .container #table table thead tr tr td {
+body .container #tableArea table thead tr tr td {
   border: 1px solid #000000;
 }
 
-body .container #table table tbody tr td {
+body .container #tableArea table tbody tr td {
   border: 1px solid #e8e9eb;
 }
 
-body .container #table table tbody tr:nth-child(2n) {
+body .container #tableArea table tbody tr:nth-child(2n) {
   background: #f4f4f4;
 }
 
-body .container #table table tbody tr:hover {
+body .container #tableArea table tbody tr:hover {
   background: #ffe8f3;
 }
 /*# sourceMappingURL=account.css.map */

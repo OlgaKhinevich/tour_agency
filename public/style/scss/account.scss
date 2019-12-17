@@ -54,18 +54,21 @@ body {
                 }
             }
         }
-        #table {
+        #tableArea {
             margin-top: 20px;
             width: 60%;
             table {
                 width: 100%;
                 border-collapse: collapse;
                 thead tr {
-                padding-left: 10px;
                 color: #ffffff; 
-                font-weight: bold; 
+                font-weight: bold;
+                text-align: center; 
                 background: #68003d;
-                tr td {border: 1px solid #000000;}
+                height: 40px;
+                tr td {
+                    border: 1px solid #000000;
+                }
                 }
                 tbody {
                     tr {

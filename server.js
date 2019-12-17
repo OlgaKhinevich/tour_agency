@@ -14,7 +14,7 @@ async function init(){
             host: "localhost",
             port: 3306,
             user: "root",
-            password: "Kartatoha20",
+            password: "xnat2699ol",
             insecureAuth: true
         });
     }
@@ -56,6 +56,7 @@ app.get("/form", (req, res)=>{
 });
 
 io.on("connection", function(socket){
+    
     // добавление нового пользователя при регистрации
     socket.on("addUser", async(user)=>{
         try {
@@ -83,7 +84,7 @@ io.on("connection", function(socket){
         try {
             const {email, password} = user;
             // Проверка на наличие пользователя в БД
-            let isExist= (await findUser(email))[0];
+            let isExist= (await getSomeUser(email))[0];
             if(isExist.length === 0) throw new Error("Такого пользователя нет в БД!");
              
             let currentUser = isExist[0];
@@ -96,15 +97,13 @@ io.on("connection", function(socket){
         }
     });
 
-    // добавление клиента
+    // добавление клиента при регистрации
     socket.on("addClient", async(client)=>{
         try {
             const {surname, name, patronimyc, email, birthdate, passport, telephone} = client;
-            // Запрос к БД
             let sqlQuery = `INSERT INTO clients VALUES("${surname}", "${name}", "${patronimyc}", "${email}", "${birthdate}", "${passport}", "${telephone}")`;
           
-
-            // // Проверка на наличие такого пользователя в БД
+            // Проверка на наличие такого пользователя в БД
             let isExist= (await getClient(passport))[0];
             if(isExist.length) throw new Error("Клиент уже существует в БД!");
             let result = await connection.execute(sqlQuery);
@@ -122,7 +121,7 @@ io.on("connection", function(socket){
     });
 
 
-    //получить коды всех существующих туров
+    // получение кодов всех существующих туров
     socket.on("getTourCodes", async()=>{
         try{
            let sqlQuery = `SELECT code FROM tours`;
@@ -135,9 +134,7 @@ io.on("connection", function(socket){
         }
     });
 
-
-
-    //Получить информацию о бронировании
+    // получение информации о бронировании
     socket.on("getBookingInfo", async ()=>{
         try{
         let sqlQuery = `SELECT c.surname, c.name,c.patronymic,c.passport,c.email, t.code, t.departure,t.arrive, t.type, t.visa 
@@ -154,6 +151,7 @@ io.on("connection", function(socket){
         }
     });
 
+    // получение ФИО пользователя после входа в систему
     socket.on("getFIO", async()=>{
         try {
             let sqlQuery = `SELECT name, surname FROM users`;
@@ -169,13 +167,8 @@ io.on("connection", function(socket){
         }
     });
 
-
+    // вспомогательные функции
     async function getSomeUser(email) {
-        let sqlQuery = `SELECT * FROM users WHERE email="${email}"`;
-        return await connection.execute(sqlQuery);
-    }
-
-    async function findUser(email) {
         let sqlQuery = `SELECT * FROM users WHERE email="${email}"`;
         return await connection.execute(sqlQuery);
     }
@@ -192,10 +185,7 @@ http.listen(3000, ()=>{
 
 init();
 
-
-
-
-//generate tour page
+//генерация страницы тура
 function genTourPage(place){
 
     let description = "";
@@ -206,25 +196,25 @@ function genTourPage(place){
       case "brazil":
           route = "Рио-де-Жанейро – Ангра-дус-Рейс";
           price = "75897 руб/чел. + перелет";
+          description = "";
         break;
       
       case "london":
         route = "Лондон";
         price = "40000 руб/чел.";
+        description = "Лондон - наиболее интересный город в Англии, к тому же, наиболее аутентичный. Тысячи туристов выбирают поездки в Лондон, чтобы увидеть одновременно и историческое прошлое великой империи, и один из центров современной цивилизации. Интереснейшее сочетание старинных готических зданий, олицетворяющих незыблемость английских традиций с современными устремлёнными в будущее высотными знаниями, оставляя яркое и ни с чем несравнимое впечатление.";
       break;
 
       case "newyork" :
         route = "Нью-Йорк";
-        price = "60000 руб/чел.";
+        price = "70550 руб/чел.";
         description = "Сегодняшний Нью-Йорк или Big Apple — это город-мегаполис, жизнь которого пульсирует в любое время суток. Cвоей особенной притягательностью «Большое яблоко» обязано не столько богатству финансовых воротил, роскошному многообразию культурно-развлекательной программы, которая одарила его прозванием «города, который никогда не спит», и даже не своей футуристической архитектуре, а скорее благодаря тому, что Нью-Йорк это органичное воплощение всей нашей планеты в миниатюре. Город контрастов кружит голову своим гостям, проносясь калейдоскопом роскошных особняков Гринвич Виллидж, пестрыми вывесками Чайнатауна, возносящимися к небу небоскребами Манхэттена, готическими соборами и шикарными магазинами 5-й авеню. ";
-
         break;
 
        case "italy":
         route = "Рим";
-        price = "30000 руб/чел.";
-        description = "Лондон - наиболее интересный город в Англии, к тому же, наиболее аутентичный. Тысячи туристов выбирают поездки в Лондон, чтобы увидеть одновременно и историческое прошлое великой империи, и один из центров современной цивилизации. Интереснейшее сочетание старинных готических зданий, олицетворяющих незыблемость английских традиций с современными устремлёнными в будущее высотными знаниями, оставляя яркое и ни с чем несравнимое впечатление.";
-       break;
+        price = "30000 руб/чел.";  
+        break;
     }
 
     return `
