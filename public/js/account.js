@@ -78,7 +78,7 @@ function drawHeaders(headers = []) {
 }
 
 
-//отрисовать таблицу с клиентами
+// отрисовать таблицу с клиентами
 function drawBookingContent(content){
     try{
      if(!content) throw new Error("Wrong params!");
@@ -158,7 +158,7 @@ socket.on("$getBookingInfo", (info)=>{
     }
  });
 
-//туры
+// туры
 document.querySelector("#codes").addEventListener("change", (e)=>{
    let table = document.querySelector("#tableArea");
    let rows = table.querySelectorAll("tbody tr");

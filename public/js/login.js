@@ -26,7 +26,7 @@ document.querySelector('#button1').addEventListener('click', function (event) {
         });
         socket.emit("login", {email: email.trim(), password: password.trim()});
     } catch(err) {
-        alert(err);
+        console.log(err);
     }
 });
 
@@ -52,7 +52,7 @@ document.querySelector('#button2').addEventListener('click', function (event) {
         });
         socket.emit("addUser", {name: name.trim(), surname: surname.trim(), email: email.trim(), password: password.trim()});
     } catch(err) {
-        alert(err);
+        console.log(err);
     } 
 });
 

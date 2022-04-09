@@ -28,18 +28,16 @@ document.querySelector('#button').addEventListener('click', function (event) {
     } 
 });
 
-
 socket.once("$getTourCodes", (tourCodes)=>{
     try{  
     if(!tourCodes) throw new Error("Ошибка при получении данных!");
     let codesChoose = document.querySelector("#tour_code_select");
-     codesChoose.innerHTML = `
+    codesChoose.innerHTML = `
      <option selected disabled> Выберите код тура </option>
      `;
-
-     tourCodes.map((item)=>{
-         codesChoose.innerHTML += `<option> ${item.code} </option>`;
-     });
+    tourCodes.map((item)=>{
+        codesChoose.innerHTML += `<option> ${item.code} </option>`;
+    });
 
     }
     catch(err){

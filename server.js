@@ -63,7 +63,6 @@ io.on("connection", function(socket){
             const {name, surname, email, password} = user;
             // Запрос к БД
             let sqlQuery = `INSERT INTO users VALUES("${name}", "${surname}", "${email}", "${password}")`;
-            
             // Проверка на наличие такого пользователя в БД
             let isExist= (await getSomeUser(email))[0];
             if(isExist.length) throw new Error("Такой пользователь уже существует!");
@@ -86,7 +85,6 @@ io.on("connection", function(socket){
             // Проверка на наличие пользователя в БД
             let isExist= (await getSomeUser(email))[0];
             if(isExist.length === 0) throw new Error("Такого пользователя нет в БД!");
-             
             let currentUser = isExist[0];
             if(currentUser.password !== password) throw new Error("Неправильный пароль!");
             socket.emit("$login",  currentUser.email);      
@@ -102,25 +100,15 @@ io.on("connection", function(socket){
         try {
             const {surname, name, patronimyc, email, birthdate, passport, telephone, tourCode} = client;
             let sqlQuery = `INSERT INTO clients VALUES("${surname}", "${name}", "${patronimyc}", "${email}", "${birthdate}", "${passport}", "${telephone}")`;
-          
-
             // Проверка на наличие такого пользователя в БД
             let isExist= (await getClient(passport))[0];
             if(isExist.length) throw new Error("Клиент уже существует в БД!");
             let clientAddStatus = await connection.execute(sqlQuery);
-      
             if (clientAddStatus[0].warningStatus!==0) throw new Error("Ошибка во время добавления!"); 
-            
-
             sqlQuery = `INSERT INTO booking VALUES("${passport}", ${tourCode})`;
             let bookingAddStatus = await connection.execute(sqlQuery);
-
             if (bookingAddStatus[0].warningStatus!==0) throw new Error("Ошибка во время добавления!"); 
-
-
             socket.emit("$addClient", true);
-      
-           
         }
         catch(err) {
             console.log(err);
@@ -147,11 +135,8 @@ io.on("connection", function(socket){
         try{
         let sqlQuery = `SELECT c.surname, c.name,c.patronymic,c.passport,c.email, t.code, t.departure,t.arrive, t.type, t.visa 
         FROM booking AS b INNER JOIN clients AS c ON c.passport = b.passport INNER JOIN  tours AS t ON t.code = b.tour_code;`;
-
-        let [bookingInfo] = await connection.execute(sqlQuery);
-           
+        let [bookingInfo] = await connection.execute(sqlQuery);  
         socket.emit("$getBookingInfo", bookingInfo);
-
         }
         catch(err){
           console.log(err);
@@ -196,32 +181,53 @@ init();
 //генерация страницы тура
 function genTourPage(place){
 
+    let tourName = "";
     let description = "";
     let route = "";
     let price = "";
+    let visa = "";
+    let dates = "";
+    let hotels = "";
 
     switch(place){
-      case "brazil":
-          route = "Рио-де-Жанейро – Ангра-дус-Рейс";
-          price = "75897 руб/чел. + перелет";
-          description = "";
+        case "brazil":
+            tourName = "Тур в Бразилию";
+            route = "Рио-де-Жанейро – Ангра-дус-Рейс";
+            price = "75897 руб/чел. + перелет";
+            dates = "05.01.2020-16.01.2020";
+            visa = "Нет";
+            description = "";
+            hotels = "ATLANTIS COPACABANA 3*";
         break;
       
-      case "london":
-        route = "Лондон";
-        price = "40000 руб/чел.";
-        description = "Лондон - наиболее интересный город в Англии, к тому же, наиболее аутентичный. Тысячи туристов выбирают поездки в Лондон, чтобы увидеть одновременно и историческое прошлое великой империи, и один из центров современной цивилизации. Интереснейшее сочетание старинных готических зданий, олицетворяющих незыблемость английских традиций с современными устремлёнными в будущее высотными знаниями, оставляя яркое и ни с чем несравнимое впечатление.";
-      break;
-
-      case "newyork" :
-        route = "Нью-Йорк";
-        price = "70550 руб/чел.";
-        description = "Сегодняшний Нью-Йорк или Big Apple — это город-мегаполис, жизнь которого пульсирует в любое время суток. Cвоей особенной притягательностью «Большое яблоко» обязано не столько богатству финансовых воротил, роскошному многообразию культурно-развлекательной программы, которая одарила его прозванием «города, который никогда не спит», и даже не своей футуристической архитектуре, а скорее благодаря тому, что Нью-Йорк это органичное воплощение всей нашей планеты в миниатюре. Город контрастов кружит голову своим гостям, проносясь калейдоскопом роскошных особняков Гринвич Виллидж, пестрыми вывесками Чайнатауна, возносящимися к небу небоскребами Манхэттена, готическими соборами и шикарными магазинами 5-й авеню. ";
+        case "london":
+            tourName = "Тур в Лондон";
+            route = "Лондон";
+            price = "40000 руб/чел.";
+            dates = "05.02.2020-16.02.2020";
+            visa = "Да";
+            description = "Лондон - наиболее интересный город в Англии, к тому же, наиболее аутентичный. Тысячи туристов выбирают поездки в Лондон, чтобы увидеть одновременно и историческое прошлое великой империи, и один из центров современной цивилизации. Интереснейшее сочетание старинных готических зданий, олицетворяющих незыблемость английских традиций с современными устремлёнными в будущее высотными знаниями, оставляя яркое и ни с чем несравнимое впечатление.";
+            hotels = "BAHIA OTHON PALACE 3 *";
         break;
 
-       case "italy":
-        route = "Рим";
-        price = "30000 руб/чел.";  
+        case "newyork" :
+            tourName = "Тур в Нью-Йорк";
+            route = "Нью-Йорк";
+            price = "70550 руб/чел.";
+            dates = "10.01.2020-17.01.2020";
+            visa = "Да";
+            description = "Сегодняшний Нью-Йорк или Big Apple — это город-мегаполис, жизнь которого пульсирует в любое время суток. Cвоей особенной притягательностью «Большое яблоко» обязано не столько богатству финансовых воротил, роскошному многообразию культурно-развлекательной программы, которая одарила его прозванием «города, который никогда не спит», и даже не своей футуристической архитектуре, а скорее благодаря тому, что Нью-Йорк это органичное воплощение всей нашей планеты в миниатюре. Город контрастов кружит голову своим гостям, проносясь калейдоскопом роскошных особняков Гринвич Виллидж, пестрыми вывесками Чайнатауна, возносящимися к небу небоскребами Манхэттена, готическими соборами и шикарными магазинами 5-й авеню. ";
+            hotels = "PARKER 3*";
+        break;
+
+        case "italy":
+            tourName = "Римские каникулы";
+            route = "Рим";
+            price = "30000 руб/чел.";
+            visa = "Да";
+            dates = "13.01.2020-19.01.2020";
+            hotels = "DONATELLO 3*";
+            description = "О «вечном» Риме можно говорить много.Но стоит ли тратить время на слова, когда так легко взять и просто отправиться в первое или очередное, но в любом случае – незабываемое путешествие в один из самых непостижимых городов на земле!";
         break;
     }
 
@@ -232,7 +238,7 @@ function genTourPage(place){
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Путешествие в Бразилию</title>
+        <title>Описание тура</title>
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Playfair+Display+SC:400,700,900&display=swap&subset=cyrillic" rel="stylesheet">
         <link rel="stylesheet" href="./style/scss/tour.css" type="text/css">
     </head>
@@ -245,21 +251,18 @@ function genTourPage(place){
                 <img src="img/${place}1.jpg">
                 <img src="img/${place}2.jpg">
                 <img src="img/${place==="brazil" ? "brazil3.jpeg": place+"3.jpg"}">
-                <h1 class="name"></h1>
+                <h1 class="name">${tourName}</h1>
                 <h3 class="route">${route}</h3>
                 <div class="text-box">
-                    <p class="dates"><strong>Даты:</strong> 05.01.2020-16.01.2020</p>
-                    <p class="hotels"><strong>Отели:</strong> 
-                        ATLANTIS COPACABANA 3* <br>
-                        BAHIA OTHON PALACE 3* <br>
-                    </p>
-                    <p class="visa"><strong>Виза:</strong></p>
+                    <p class="dates"><strong>Даты:</strong>${dates}</p>
+                    <p class="hotels"><strong>Отель:</strong>${hotels}</p>
+                    <p class="visa"><strong>Виза:</strong> ${visa}</p>
                     <p class="price"><strong>Цена:</strong> ${price}</p>    
-            </div>
-            <p class="description">${description}</p>
-            <a href="/home" class="button">назад</a>
-            <a href="/form" class="button">забронировать</a>
-            </div>      
+                </div>
+                <p class="description">${description}</p>
+                <a href="/home" class="button">назад</a>
+                <a href="/form" class="button">забронировать</a>
+                </div>      
         </div>
         <script src="js/tour.js"></script>
     </body>
